@@ -163,7 +163,7 @@
     if(sessionStorage.getItem("logged") === "true") checkPass();
 
     function unlockSystem() {
-        let p = prompt("أدخل باسوورد التعديل (254468300):");
+        let p = prompt("أدخل باسوورد التعديل :");
         if(p === OP_PASS) {
             isAdmin = true;
             document.getElementById("lockBtn").innerText = "🔓 وضع التعديل مفتوح";
