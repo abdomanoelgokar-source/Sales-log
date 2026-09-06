@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesLog Royal Cloud | elgokar WhatsApp</title>
+    <title>SalesLog Royal | Philo fries</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -22,10 +22,14 @@
             color: var(--text-light); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
+        /* شاشة الدخول الرئيسية */
         #loginOverlay { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-card { background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-gold); text-align: center; width: 300px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
-        .login-card h1 { color: var(--primary-gold); margin-bottom: 20px; }
         .login-card input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-size: 18px; }
+
+        /* نافذة باسوورد التعديل (المخفية) */
+        #verifyOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; }
+        .verify-card { background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid var(--accent); text-align: center; width: 280px; }
 
         #mainContent { display: none; width: 96%; max-width: 1400px; margin: 20px auto; flex: 1; }
 
@@ -40,19 +44,15 @@
         .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
         .btn-add { background: var(--success); } .btn-archive { background: var(--accent); } .btn-user { background: var(--primary-gold); color: #000; }
         .btn-lock { background: #64748b; }
-        .btn-wa { background: var(--whatsapp); padding: 5px 10px !important; }
+        .btn-wa { background: var(--whatsapp); padding: 5px 10px !important; border-radius: 6px; }
 
         .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; min-width: 1150px; }
         th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); font-size: 14px; }
         td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
-        .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 90%; outline: none; font-family: Arial; }
+        .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 95%; outline: none; font-family: Arial; }
         .table-input::placeholder { color: rgba(255,255,255,0.2); }
-
-        .canceled-row { color: var(--danger) !important; opacity: 0.7; font-style: italic; }
-        .canceled-row td { text-decoration: line-through; }
-        .canceled-tag { color: var(--danger); font-weight: bold; font-size: 11px; margin-right: 5px; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .stat-card { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); border-top: 4px solid var(--primary-gold); }
@@ -72,20 +72,34 @@
 </head>
 <body>
 
+<!-- شاشة الدخول الرئيسية -->
 <div id="loginOverlay">
     <div class="login-card">
         <h1>SalesLog</h1>
+        <p style="color:var(--primary-gold)">Philo fries</p>
         <input type="password" id="passInput" placeholder="Password">
-        <button class="btn btn-user" onclick="checkPass()" style="width:100%; justify-content: center;">دخول للنظام</button>
+        <button class="btn btn-user" onclick="checkPass()" style="width:100%; justify-content: center;">دخول</button>
+    </div>
+</div>
+
+<!-- نافذة التحقق من العمليات (مخفية) -->
+<div id="verifyOverlay">
+    <div class="verify-card">
+        <h3 style="color:var(--accent); margin-top:0;">إذن التعديل</h3>
+        <input type="password" id="actionPassInp" placeholder="أدخل الرقم السري" style="width: 100%; padding: 10px; margin-bottom: 15px; text-align: center; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff;">
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-add" onclick="confirmUnlock()" style="flex:1; justify-content:center">فتح</button>
+            <button class="btn" onclick="closeVerify()" style="flex:1; justify-content:center; background:#444">إلغاء</button>
+        </div>
     </div>
 </div>
 
 <div id="mainContent">
     <header>
-        <div class="logo">SalesLog Royal ☁️</div>
-        <div id="liveClock" style="font-family: monospace; color: var(--primary-gold);">00:00:00</div>
+        <div class="logo">Philo fries 🍟</div>
+        <div id="liveClock" style="font-family: monospace; color: var(--primary-gold); font-weight:bold;">00:00:00</div>
         <div class="no-print">
-            <button class="btn btn-lock" id="lockBtn" onclick="unlockSystem()">🔒 فتح وضع التعديل</button>
+            <button class="btn btn-lock" id="lockBtn" onclick="openVerify()">🔒 فتح وضع التعديل</button>
             <button class="btn btn-lock" style="margin-top:5px; font-size:10px;" onclick="document.getElementById('bgInp').click()">🖼 الخلفية</button>
             <input type="file" id="bgInp" hidden accept="image/*" onchange="changeBg(this)">
         </div>
@@ -125,19 +139,19 @@
 
     <div id="historySection" class="tab-section" style="display:none"><div id="historyList"></div></div>
     <div id="masterSection" class="tab-section" style="display:none">
-        <div class="table-wrapper"><table id="weeklyTable"><thead><tr><th>الأسبوع</th><th>الكمية</th><th>المبيعات</th><th>الربح الصافي</th></tr></thead><tbody id="weeklyBody"></tbody></table></div>
-        <div class="table-wrapper"><table><thead><tr><th>التاريخ</th><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr></thead><tbody id="masterBody"></tbody></table></div>
+        <div class="table-wrapper"><table id="masterTable"><thead><tr><th>التاريخ</th><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th></tr></thead><tbody id="masterBody"></tbody></table></div>
     </div>
 </div>
 
 <footer class="no-print">
     <div class="dev-container">
-        <span class="dev-name">elgokar</span>
-        <span class="dev-contact">للتواصل واتس 01126511633</span>
+        <span class="dev-name">Philo fries</span>
+        <span class="dev-contact">واتس 01126511633</span>
     </div>
 </footer>
 
 <script>
+    // --- ربط فايربيز ---
     const firebaseConfig = {
         apiKey: "AIzaSyAHoQSf3qtH_DaQIRVgvu3rKJr fBB24P38",
         authDomain: "sales-log-41275.firebaseapp.com",
@@ -162,14 +176,18 @@
     }
     if(sessionStorage.getItem("logged") === "true") checkPass();
 
-    function unlockSystem() {
-        let p = prompt("أدخل باسوورد التعديل");
+    // نظام التحقق من وضع التعديل (الباسورد المخفي)
+    function openVerify() { document.getElementById("verifyOverlay").style.display = "flex"; }
+    function closeVerify() { document.getElementById("verifyOverlay").style.display = "none"; }
+    function confirmUnlock() {
+        let p = document.getElementById("actionPassInp").value;
         if(p === "254468300") {
             isAdmin = true;
             document.getElementById("lockBtn").innerText = "🔓 وضع التعديل مفتوح";
             document.getElementById("lockBtn").style.background = "var(--success)";
+            closeVerify();
             startSync();
-        } else { alert("الباسوورد خطأ!"); }
+        } else { alert("باسوورد التعديل خطأ!"); }
     }
 
     function startSync() {
@@ -190,7 +208,6 @@
         let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
 
         sales.forEach((s, i) => {
-            if(s.isCanceled && archID) return;
             let q = parseFloat(s.qty) || 0; let p = parseFloat(s.price) || 0;
             let rt = q * p; let rp = (p - cost) * q;
             tQ += q; tR += rt; tP += rp;
@@ -221,7 +238,7 @@
             const s = snap.val();
             if(!s.phone) return alert("أدخل رقم العميل أولاً");
             const total = (parseFloat(s.qty) * parseFloat(s.price)).toLocaleString();
-            const msg = `*فاتورة مبيعات من SalesLog ☁️*%0A---------------------------%0A*اسم العميل:* ${s.name}%0A*نوع المنتج:* ${s.product}%0A*الكمية:* ${s.qty}%0A*سعر البيع:* ${s.price} EGP%0A*الإجمالي:* ${total} EGP%0A---------------------------%0A*شكراً لتعاملك مع elgokar*`;
+            const msg = `🍟 *فاتورة مبيعات من Philo fries* 🍟%0A------------------------------------%0A👤 *العميل:* ${s.name}%0A🍟 *نوع المنتج:* ${s.product}%0A🔢 *الكمية:* ${s.qty}%0A💰 *سعر البيع:* ${s.price} EGP%0A💵 *الإجمالي:* ${total} EGP%0A------------------------------------%0A✨ *نسعد دائماً بخدمتكم.. Philo fries تتمنى لكم يوماً سعيداً* ✨`;
             window.open(`https://wa.me/20${s.phone}?text=${msg}`, '_blank');
         });
     }
@@ -234,18 +251,14 @@
         let ref = archID ? `history/${archID}/sales` : `currentDay/sales`;
         db.ref(ref).once('value', (snap) => {
             let s = snap.val() || [];
-            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:"", isCanceled: false});
+            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:""});
             db.ref(ref).set(s);
         });
     }
 
     function deleteSale(i) {
         if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("مسح؟")) {
-            isTyping = false;
-            if(archID) db.ref(`history/${archID}/sales/${i}/isCanceled`).set(true);
-            else { db.ref('currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s); }); }
-        }
+        if(confirm("مسح؟")) { isTyping = false; db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').set(s); }); }
     }
 
     function archiveToday() {
@@ -253,7 +266,7 @@
         if(!confirm("ترحيل؟")) return;
         db.ref('currentDay').once('value', (snap) => {
             const d = snap.val();
-            db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales, isCanceledDay: false });
+            db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales });
             db.ref('currentDay/sales').set([]);
             alert("تم الترحيل");
         });
@@ -264,56 +277,26 @@
             const list = document.getElementById("historyList"); list.innerHTML = "";
             const d = snap.val(); if(!d) return;
             Object.keys(d).reverse().forEach(id => {
-                if(d[id].isCanceledDay) return;
                 let div = document.createElement("div");
                 div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);";
-                div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> 
-                <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح</button><button class="btn" style="background:var(--danger); margin-top:5px;" onclick="cancelFullDay('${id}')">حذف</button></div>`;
+                div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح اليوم</button></div>`;
                 list.appendChild(div);
             });
         });
     }
 
-    function cancelFullDay(id) {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("حذف نهائي؟")) db.ref(`history/${id}/isCanceledDay`).set(true);
-    }
-
-    function viewHist(id) {
-        archID = id;
-        db.ref(`history/${id}`).on('value', (snap) => {
-            const e = snap.val(); if(!e) return;
-            document.getElementById("costPerUnit").value = e.cost;
-            renderTable(e.sales || []);
-            showTab('today');
-        });
-    }
+    function viewHist(id) { archID = id; db.ref(`history/${id}`).on('value', (snap) => { const e = snap.val(); if(!e) return; document.getElementById("costPerUnit").value = e.cost; renderTable(e.sales || []); showTab('today'); }); }
 
     function loadMasterLog() {
         const b = document.getElementById("masterBody"); b.innerHTML = "";
-        const w = document.getElementById("weeklyBody"); w.innerHTML = "";
         db.ref().once('value', (snap) => {
-            const a = snap.val(); if(!a) return;
-            let weeklyData = {};
-            if(a.history) {
-                Object.keys(a.history).reverse().forEach(dayKey => {
-                    let h = a.history[dayKey];
-                    h.sales.forEach((s, sIdx) => {
-                        let q = parseFloat(s.qty)||0; let p = parseFloat(s.price)||0;
-                        let rt = q * p; let rp = (p - h.cost) * q;
-                        let row = b.insertRow();
-                        if(h.isCanceledDay || s.isCanceled) row.className = "canceled-row";
-                        row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td><td><button class="btn" style="background:var(--danger);padding:5px" onclick="finalDelete('${dayKey}',${sIdx})">❌</button></td>`;
-                    });
+            const a = snap.val(); if(!a || !a.history) return;
+            Object.values(a.history).reverse().forEach(h => {
+                if(h.sales) h.sales.forEach(s => {
+                    let row = b.insertRow();
+                    row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${(s.qty*s.price).toLocaleString()}</td><td>${((s.price-h.cost)*s.qty).toLocaleString()}</td>`;
                 });
-            }
-        });
-    }
-
-    function finalDelete(dk, si) {
-        if(!isAdmin) return alert("افتح التعديل");
-        if(confirm("حذف نهائي من السحابة؟")) db.ref(`history/${dk}/sales`).once('value', snap => {
-            let s = snap.val(); s.splice(si,1); db.ref(`history/${dk}/sales`).set(s).then(()=>loadMasterLog());
+            });
         });
     }
 
@@ -322,19 +305,21 @@
     function doPrint(m) {
         let win = window.open('', '', 'height=700,width=1000');
         let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
-        html += `<h2>SalesLog - ${m==='user'?'تقرير إدارة':'فاتورة عميل'}</h2><table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
+        html += `<h2>فاتورة مبيعات من Philo fries 🍟</h2>`;
+        html += `<table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
         if(m==='user') html += `<th>المكسب</th>`;
         html += `</tr></thead><tbody>`;
         document.querySelectorAll("#salesTable tbody tr").forEach(r => {
             let n=r.cells[1].querySelector('input').value; let pr=r.cells[3].querySelector('input').value; let q=r.cells[4].querySelector('input').value; let p=r.cells[5].querySelector('input').value;
             if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[7].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><footer style="margin-top:30px; text-align:center;">elgokar | 01126511633</footer></body></html>`;
+        html += `</tbody></table><footer style="margin-top:30px; text-align:center; font-weight:bold; color:#1e90ff;">Philo fries | جودة نثق بها، طعم يعشقه الجميع ✨</footer></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
-    function changeBg(input) { if(!isAdmin) return alert("افتح التعديل"); if (input.files && input.files[0]) { let reader = new FileReader(); reader.onload = (e) => { document.body.style.backgroundImage = `url(${e.target.result})`; localStorage.setItem("royal_bg", e.target.result); }; reader.readAsDataURL(input.files[0]); } }
+    function changeBg(input) { if (input.files && input.files[0]) { let reader = new FileReader(); reader.onload = (e) => { document.body.style.backgroundImage = `url(${e.target.result})`; localStorage.setItem("royal_bg", e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     setInterval(()=> { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    document.getElementById("passInput").addEventListener("keypress", (e) => { if(e.key === "Enter") checkPass(); });
 </script>
 </body>
 </html>
