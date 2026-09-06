@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesLog Royal Cloud | Boda elgokar</title>
+    <title>SalesLog Royal Cloud | elgokar</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -42,16 +42,15 @@
         .btn-lock { background: #64748b; }
 
         .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1050px; }
         th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); }
         td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
         .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 90%; outline: none; font-family: Arial; }
-        .table-input:read-only { opacity: 0.6; cursor: not-allowed; }
 
-        .canceled-row { color: var(--danger) !important; font-style: italic; opacity: 0.7; }
+        .canceled-row { color: var(--danger) !important; opacity: 0.7; font-style: italic; }
         .canceled-row td { text-decoration: line-through; }
-        .canceled-tag { color: var(--danger); font-weight: bold; font-size: 11px; text-decoration: none !important; display: inline-block; margin-right: 5px; }
+        .canceled-tag { color: var(--danger); font-weight: bold; font-size: 11px; margin-right: 5px; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .stat-card { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); border-top: 4px solid var(--primary-gold); }
@@ -61,7 +60,20 @@
         .t-btn { padding: 10px 25px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: #94a3b8; cursor: pointer; }
         .t-btn.active { background: var(--primary-gold); color: #000; font-weight: bold; }
 
-        footer { padding: 20px; text-align: center; color: #64748b; font-weight: bold; border-top: 1px solid var(--glass-border); margin-top: auto; }
+        /* تنسيق المطور الجديد والشيك */
+        footer { padding: 40px 20px; text-align: center; margin-top: auto; }
+        .dev-container {
+            display: inline-block;
+            padding: 12px 30px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-gold);
+            border-radius: 50px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+        .dev-name { color: var(--primary-gold); font-weight: 900; font-size: 18px; letter-spacing: 1px; }
+        .dev-contact { color: #fff; font-size: 13px; margin-right: 15px; border-right: 1px solid #555; padding-right: 15px; }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -127,14 +139,20 @@
         </div>
         <h3 style="color:var(--primary-gold); margin-top:30px;">📜 كافة العمليات التاريخية</h3>
         <div class="table-wrapper">
-            <table><thead><tr><th>التاريخ</th><th>العميل</th><th>نوع المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th></tr></thead><tbody id="masterBody"></tbody></table>
+            <table><thead><tr><th>التاريخ</th><th>العميل</th><th>نوع المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr></thead><tbody id="masterBody"></tbody></table>
         </div>
     </div>
 </div>
 
-<footer>المطور Boda elgokar - <span style="color:#f43f5e">yola❤</span></footer>
+<footer class="no-print">
+    <div class="dev-container">
+        <span class="dev-name">elgokar</span>
+        <span class="dev-contact">للتواصل واتس 01126511633</span>
+    </div>
+</footer>
 
 <script>
+    // --- ربط فايربيز ---
     const firebaseConfig = {
         apiKey: "AIzaSyAHoQSf3qtH_DaQIRVgvu3rKJr fBB24P38",
         authDomain: "sales-log-41275.firebaseapp.com",
@@ -245,7 +263,7 @@
 
     function deleteSale(i) {
         if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("إلغاء العملية؟")) {
+        if(confirm("مسح هذه العملية؟")) {
             isTyping = false;
             if(archID) db.ref(`history/${archID}/sales/${i}/isCanceled`).set(true);
             else {
@@ -253,6 +271,18 @@
                     let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s);
                 });
             }
+        }
+    }
+
+    function deleteFromMaster(dayKey, saleIndex, isToday) {
+        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
+        if(confirm("هل أنت متأكد من حذف هذه البيعة نهائياً من السحابة؟")) {
+            let path = isToday ? `currentDay/sales` : `history/${dayKey}/sales`;
+            db.ref(path).once('value', (snap) => {
+                let s = snap.val() || [];
+                s.splice(saleIndex, 1);
+                db.ref(path).set(s).then(() => loadMasterLog());
+            });
         }
     }
 
@@ -313,28 +343,46 @@
         const b = document.getElementById("masterBody"); b.innerHTML = "";
         const w = document.getElementById("weeklyBody"); w.innerHTML = "";
         db.ref().once('value', (snap) => {
-            const a = snap.val(); if(!a.history) return;
+            const a = snap.val(); if(!a) return;
             let weeklyData = {};
-            Object.values(a.history).reverse().forEach(h => {
-                let isDayCanceled = h.isCanceledDay === true;
-                let weekKey = getWeekKey(h.date);
-                if(!weeklyData[weekKey]) weeklyData[weekKey] = { q:0, r:0, p:0 };
-                h.sales.forEach(s => {
+            
+            if(a.history) {
+                Object.keys(a.history).reverse().forEach(dayKey => {
+                    let h = a.history[dayKey];
+                    let isDayCanceled = h.isCanceledDay === true;
+                    let weekKey = getWeekKey(h.date);
+                    if(!weeklyData[weekKey]) weeklyData[weekKey] = { q:0, r:0, p:0 };
+                    if(h.sales) {
+                        h.sales.forEach((s, sIndex) => {
+                            let q = parseFloat(s.qty) || 0;
+                            let p = parseFloat(s.price) || 0;
+                            let rt = q * p; let rp = (p - h.cost) * q;
+                            if(!isDayCanceled && !s.isCanceled) {
+                                weeklyData[weekKey].q += q; weeklyData[weekKey].r += rt; weeklyData[weekKey].p += rp;
+                            }
+                            let row = b.insertRow();
+                            if(isDayCanceled || s.isCanceled) row.className = "canceled-row";
+                            row.innerHTML = `<td>${h.date} ${isDayCanceled || s.isCanceled ? '<span class="canceled-tag">ملغي</span>' : ''}</td>
+                                             <td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td>
+                                             <td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>
+                                             <td class="no-print"><button class="btn" style="background:var(--danger); padding:5px" onclick="deleteFromMaster('${dayKey}', ${sIndex}, false)">❌</button></td>`;
+                        });
+                    }
+                });
+            }
+
+            if(a.currentDay && a.currentDay.sales) {
+                a.currentDay.sales.forEach((s, sIndex) => {
                     let q = parseFloat(s.qty) || 0;
                     let p = parseFloat(s.price) || 0;
-                    let rt = q * p; let rp = (p - h.cost) * q;
-                    if(!isDayCanceled && !s.isCanceled) {
-                        weeklyData[weekKey].q += q;
-                        weeklyData[weekKey].r += rt;
-                        weeklyData[weekKey].p += rp;
-                    }
-                    let row = b.insertRow();
-                    if(isDayCanceled || s.isCanceled) row.className = "canceled-row";
-                    row.innerHTML = `<td>${h.date} ${isDayCanceled || s.isCanceled ? '<span class="canceled-tag">ملغي</span>' : ''}</td>
-                                     <td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td>
-                                     <td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>`;
+                    let rt = q * p; let rp = (p - a.currentDay.cost) * q;
+                    let row = b.insertRow(0);
+                    row.innerHTML = `<td>اليوم (قيد العمل)</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td>
+                                     <td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>
+                                     <td class="no-print"><button class="btn" style="background:var(--danger); padding:5px" onclick="deleteFromMaster('', ${sIndex}, true)">❌</button></td>`;
                 });
-            });
+            }
+
             for(let key in weeklyData) {
                 let row = w.insertRow();
                 row.innerHTML = `<td>${key}</td><td>${weeklyData[key].q}</td>
@@ -365,7 +413,7 @@
             let p=r.cells[4].querySelector('input').value;
             if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[5].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[6].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><footer style="margin-top:30px; text-align:center;">المطور Boda elgokar - yola❤</footer></body></html>`;
+        html += `</tbody></table><footer style="margin-top:30px; text-align:center; font-weight:bold;">elgokar | للتواصل واتس 01126511633</footer></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
