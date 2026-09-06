@@ -22,12 +22,10 @@
             color: var(--text-light); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* شاشة الدخول الرئيسية */
         #loginOverlay { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-card { background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-gold); text-align: center; width: 300px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
         .login-card input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-size: 18px; }
 
-        /* نافذة باسوورد التعديل (المخفية) */
         #verifyOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; }
         .verify-card { background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid var(--accent); text-align: center; width: 280px; }
 
@@ -52,7 +50,6 @@
         td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
         .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 95%; outline: none; font-family: Arial; }
-        .table-input::placeholder { color: rgba(255,255,255,0.2); }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .stat-card { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); border-top: 4px solid var(--primary-gold); }
@@ -65,14 +62,12 @@
         footer { padding: 40px 20px; text-align: center; margin-top: auto; }
         .dev-container { display: inline-block; padding: 12px 30px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--primary-gold); border-radius: 50px; }
         .dev-name { color: var(--primary-gold); font-weight: 900; font-size: 18px; }
-        .dev-contact { color: #fff; font-size: 13px; margin-right: 15px; border-right: 1px solid #555; padding-right: 15px; }
 
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
 
-<!-- شاشة الدخول الرئيسية -->
 <div id="loginOverlay">
     <div class="login-card">
         <h1>SalesLog</h1>
@@ -82,7 +77,6 @@
     </div>
 </div>
 
-<!-- نافذة التحقق من العمليات (مخفية) -->
 <div id="verifyOverlay">
     <div class="verify-card">
         <h3 style="color:var(--accent); margin-top:0;">إذن التعديل</h3>
@@ -145,8 +139,7 @@
 
 <footer class="no-print">
     <div class="dev-container">
-        <span class="dev-name">Philo fries</span>
-        <span class="dev-contact">واتس 01126511633</span>
+        <span class="dev-name">elgokar | 01126511633</span>
     </div>
 </footer>
 
@@ -176,7 +169,6 @@
     }
     if(sessionStorage.getItem("logged") === "true") checkPass();
 
-    // نظام التحقق من وضع التعديل (الباسورد المخفي)
     function openVerify() { document.getElementById("verifyOverlay").style.display = "flex"; }
     function closeVerify() { document.getElementById("verifyOverlay").style.display = "none"; }
     function confirmUnlock() {
@@ -211,7 +203,6 @@
             let q = parseFloat(s.qty) || 0; let p = parseFloat(s.price) || 0;
             let rt = q * p; let rp = (p - cost) * q;
             tQ += q; tR += rt; tP += rp;
-
             let row = tbody.insertRow();
             row.innerHTML = `
                 <td><input class="table-input" value="${s.time}" readonly style="border:none; width:70px"></td>
@@ -224,7 +215,7 @@
                 <td style="color:var(--success); font-weight:bold;">${rp.toLocaleString()}</td>
                 <td class="no-print">
                     <button class="btn btn-wa" onclick="sendWA(${i})">💬</button>
-                    <button class="btn" style="padding:5px; background:var(--danger); display:inline-block;" onclick="deleteSale(${i})">❌</button>
+                    <button class="btn" style="padding:5px; background:var(--danger);" onclick="deleteSale(${i})">❌</button>
                 </td>
             `;
         });
@@ -238,31 +229,18 @@
             const s = snap.val();
             if(!s.phone) return alert("أدخل رقم العميل أولاً");
             const total = (parseFloat(s.qty) * parseFloat(s.price)).toLocaleString();
-            const msg = `🍟 *فاتورة مبيعات من Philo fries* 🍟%0A------------------------------------%0A👤 *العميل:* ${s.name}%0A🍟 *نوع المنتج:* ${s.product}%0A🔢 *الكمية:* ${s.qty}%0A💰 *سعر البيع:* ${s.price} EGP%0A💵 *الإجمالي:* ${total} EGP%0A------------------------------------%0A✨ *نسعد دائماً بخدمتكم.. Philo fries تتمنى لكم يوماً سعيداً* ✨`;
+            const msg = `🍟 *فاتورة مبيعات من Philo fries* 🍟%0A------------------------------------%0A👤 *العميل:* ${s.name}%0A🍟 *نوع المنتج:* ${s.product}%0A🔢 *الكمية:* ${s.qty}%0A💰 *السعر:* ${s.price} EGP%0A💵 *الإجمالي:* ${total} EGP%0A------------------------------------%0A✨ *جودة نثق بها.. وطعم يعشقه الجميع* %0A📍 *Philo fries ترحب بكم* %0A📲 *للتواصل:* wa.me/201126511633`;
             window.open(`https://wa.me/20${s.phone}?text=${msg}`, '_blank');
         });
     }
 
     function updateSale(i, f, v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`; db.ref(ref).child(f).set(v); }
     function updateCost(v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/cost` : `currentDay/cost`; db.ref(ref).set(v); }
-    
-    function addNewOrder() {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        let ref = archID ? `history/${archID}/sales` : `currentDay/sales`;
-        db.ref(ref).once('value', (snap) => {
-            let s = snap.val() || [];
-            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:""});
-            db.ref(ref).set(s);
-        });
-    }
-
-    function deleteSale(i) {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("مسح؟")) { isTyping = false; db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').set(s); }); }
-    }
+    function addNewOrder() { if(!isAdmin) return alert("افتح التعديل"); let ref = archID ? `history/${archID}/sales` : `currentDay/sales`; db.ref(ref).once('value', (snap) => { let s = snap.val() || []; s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:""}); db.ref(ref).set(s); }); }
+    function deleteSale(i) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("مسح؟")) { isTyping = false; db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref(archID ? `history/${archID}/sales` : 'currentDay/sales').set(s); }); } }
 
     function archiveToday() {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
+        if(!isAdmin) return alert("افتح التعديل");
         if(!confirm("ترحيل؟")) return;
         db.ref('currentDay').once('value', (snap) => {
             const d = snap.val();
@@ -272,48 +250,35 @@
         });
     }
 
-    function loadHistoryList() {
-        db.ref('history').on('value', (snap) => {
-            const list = document.getElementById("historyList"); list.innerHTML = "";
-            const d = snap.val(); if(!d) return;
-            Object.keys(d).reverse().forEach(id => {
-                let div = document.createElement("div");
-                div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);";
-                div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح اليوم</button></div>`;
-                list.appendChild(div);
-            });
-        });
-    }
-
+    function loadHistoryList() { db.ref('history').on('value', (snap) => { const list = document.getElementById("historyList"); list.innerHTML = ""; const d = snap.val(); if(!d) return; Object.keys(d).reverse().forEach(id => { let div = document.createElement("div"); div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);"; div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح اليوم</button></div>`; list.appendChild(div); }); }); }
     function viewHist(id) { archID = id; db.ref(`history/${id}`).on('value', (snap) => { const e = snap.val(); if(!e) return; document.getElementById("costPerUnit").value = e.cost; renderTable(e.sales || []); showTab('today'); }); }
 
-    function loadMasterLog() {
-        const b = document.getElementById("masterBody"); b.innerHTML = "";
-        db.ref().once('value', (snap) => {
-            const a = snap.val(); if(!a || !a.history) return;
-            Object.values(a.history).reverse().forEach(h => {
-                if(h.sales) h.sales.forEach(s => {
-                    let row = b.insertRow();
-                    row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${(s.qty*s.price).toLocaleString()}</td><td>${((s.price-h.cost)*s.qty).toLocaleString()}</td>`;
-                });
-            });
-        });
-    }
+    function loadMasterLog() { const b = document.getElementById("masterBody"); b.innerHTML = ""; db.ref().once('value', (snap) => { const a = snap.val(); if(!a || !a.history) return; Object.values(a.history).reverse().forEach(h => { if(h.sales) h.sales.forEach(s => { let row = b.insertRow(); row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${(s.qty*s.price).toLocaleString()}</td><td>${((s.price-h.cost)*s.qty).toLocaleString()}</td>`; }); }); }); }
 
     function showTab(t) { if(t !== 'today') archID = null; document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none'); document.getElementById(t + 'Section').style.display = 'block'; document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + t).classList.add('active'); }
 
+    // --- وظيفة الطباعة الملكية المحدثة بالـ QR Code ---
     function doPrint(m) {
+        let rows = document.querySelectorAll("#salesTable tbody tr");
         let win = window.open('', '', 'height=700,width=1000');
-        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
+        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:40px; background:#fff; color:#000; text-align:center;} table{width:80%; margin: 20px auto; border-collapse:collapse;} th,td{border:1px solid #000; padding:12px; text-align:center;} th{background:#f9f9f9;} .qr-container{margin-top:40px;} .footer-text{color:#1e90ff; font-weight:bold; margin-top:15px;}</style></head><body>`;
         html += `<h2>فاتورة مبيعات من Philo fries 🍟</h2>`;
         html += `<table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
         if(m==='user') html += `<th>المكسب</th>`;
         html += `</tr></thead><tbody>`;
-        document.querySelectorAll("#salesTable tbody tr").forEach(r => {
+        rows.forEach(r => {
             let n=r.cells[1].querySelector('input').value; let pr=r.cells[3].querySelector('input').value; let q=r.cells[4].querySelector('input').value; let p=r.cells[5].querySelector('input').value;
             if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[7].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><footer style="margin-top:30px; text-align:center; font-weight:bold; color:#1e90ff;">Philo fries | جودة نثق بها، طعم يعشقه الجميع ✨</footer></body></html>`;
+        html += `</tbody></table>`;
+        
+        // إضافة الـ QR Code والرسالة الختامية
+        html += `<div class="qr-container">`;
+        html += `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/201126511633" alt="QR Code">`;
+        html += `<p class="footer-text">Philo fries | جودة نثق بها، طعم يعشقه الجميع ✨</p>`;
+        html += `</div>`;
+        
+        html += `<p style="margin-top:30px; font-size:12px; opacity:0.6;">المطور elgokar</p></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
