@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesLog Royal | Philo fries Cloud & Offline</title>
+    <title>SalesLog Royal | Philo fries</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -22,12 +22,6 @@
             color: var(--text-light); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* مؤشر حالة الاتصال */
-        .status-bar { font-size: 12px; display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-
         #loginOverlay { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-card { background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-gold); text-align: center; width: 300px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
         .login-card input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-size: 18px; }
@@ -42,7 +36,7 @@
             background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 20px;
             border: 1px solid var(--glass-border); margin-bottom: 25px;
         }
-        .logo { font-size: 24px; font-weight: 900; color: var(--primary-gold); }
+        .logo { font-size: 26px; font-weight: 900; color: var(--primary-gold); }
 
         .toolbar { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
@@ -51,10 +45,15 @@
 
         .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; }
         table { width: 100%; border-collapse: collapse; min-width: 1150px; }
-        th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); font-size: 14px; }
+        th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); }
         td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
         .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 95%; outline: none; font-family: Arial; }
+        .table-input::placeholder { color: rgba(255,255,255,0.2); }
+
+        .canceled-row { color: var(--danger) !important; opacity: 0.7; font-style: italic; }
+        .canceled-row td { text-decoration: line-through; }
+        .canceled-tag { color: var(--danger); font-weight: bold; font-size: 11px; margin-right: 5px; text-decoration: none !important; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .stat-card { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); border-top: 4px solid var(--primary-gold); }
@@ -95,7 +94,6 @@
 <div id="mainContent">
     <header>
         <div class="logo">Philo fries 🍟</div>
-        <div id="connStatus" class="status-bar"><span id="statusDot" class="dot online"></span> <span id="statusText">متصل</span></div>
         <div id="liveClock" style="font-family: monospace; color: var(--primary-gold); font-weight:bold;">00:00:00</div>
         <div class="no-print">
             <button class="btn btn-lock" id="lockBtn" onclick="openVerify()">🔒 فتح وضع التعديل</button>
@@ -124,7 +122,7 @@
         <div class="table-wrapper">
             <table id="salesTable">
                 <thead>
-                    <tr><th>الوقت</th><th>اسم العميل</th><th>رقم الموبايل</th><th>نوع المنتج</th><th>الكمية</th><th>سعر البيع</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr>
+                    <tr><th>الوقت</th><th>اسم العميل</th><th>الموبايل</th><th>نوع المنتج</th><th>الكمية</th><th>سعر البيع</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -138,13 +136,14 @@
 
     <div id="historySection" class="tab-section" style="display:none"><div id="historyList"></div></div>
     <div id="masterSection" class="tab-section" style="display:none">
-        <div class="table-wrapper"><table id="masterTable"><thead><tr><th>التاريخ</th><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th></tr></thead><tbody id="masterBody"></tbody></table></div>
+        <div class="table-wrapper"><table id="weeklyTable"><thead><tr><th>الأسبوع</th><th>الكمية</th><th>المبيعات</th><th>الربح الصافي</th></tr></thead><tbody id="weeklyBody"></tbody></table></div>
+        <div class="table-wrapper"><table><thead><tr><th>التاريخ</th><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th></tr></thead><tbody id="masterBody"></tbody></table></div>
     </div>
 </div>
 
 <footer class="no-print">
     <div class="dev-container">
-        <span class="dev-name">elgokar | 01126511633</span>
+        <span style="color:var(--primary-gold); font-weight:900;">elgokar</span> | 01126511633
     </div>
 </footer>
 
@@ -163,21 +162,6 @@
     
     let isAdmin = false; let isTyping = false; let archID = null;
 
-    // فحص حالة الإنترنت
-    window.addEventListener('online', updateStatus);
-    window.addEventListener('offline', updateStatus);
-    function updateStatus() {
-        const dot = document.getElementById("statusDot");
-        const text = document.getElementById("statusText");
-        if (navigator.onLine) {
-            dot.className = "dot online"; text.innerText = "متصل";
-            db.goOnline();
-        } else {
-            dot.className = "dot offline"; text.innerText = "أوفلاين (يتم الحفظ محلياً)";
-            db.goOffline();
-        }
-    }
-
     function checkPass() {
         if(document.getElementById("passInput").value === "25446" || sessionStorage.getItem("logged") === "true") {
             document.getElementById("loginOverlay").style.display = "none";
@@ -195,23 +179,18 @@
             isAdmin = true; document.getElementById("lockBtn").innerText = "🔓 وضع التعديل مفتوح";
             document.getElementById("lockBtn").style.background = "var(--success)";
             closeVerify(); startSync();
-        } else { alert("باسوورد التعديل خطأ!"); }
+        } else { alert("خطأ!"); }
     }
 
     function startSync() {
-        // تفعيل وضع الأوفلاين في فايربيز
-        db.ref('currentDay').keepSynced(true);
         db.ref('currentDay').on('value', (snap) => {
             if(isTyping) return;
             const data = snap.val() || { cost:0, sales:[] };
             document.getElementById("costPerUnit").value = data.cost || "";
             renderTable(data.sales || []);
-            // حفظ نسخة للاحتياط القصوى
-            localStorage.setItem("offline_backup", JSON.stringify(data));
         });
         let savedBg = localStorage.getItem("royal_bg");
         if(savedBg) document.body.style.backgroundImage = `url(${savedBg})`;
-        updateStatus();
     }
 
     function renderTable(sales) {
@@ -221,9 +200,11 @@
         let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
 
         sales.forEach((s, i) => {
+            if(s.isCanceled && archID) return;
             let q = parseFloat(s.qty) || 0; let p = parseFloat(s.price) || 0;
             let rt = q * p; let rp = (p - cost) * q;
             tQ += q; tR += rt; tP += rp;
+
             let row = tbody.insertRow();
             row.innerHTML = `
                 <td><input class="table-input" value="${s.time}" readonly style="border:none; width:70px"></td>
@@ -245,29 +226,112 @@
         document.getElementById("totalProf").innerText = tP.toLocaleString();
     }
 
-    function updateSale(i, f, v) { if(!isAdmin) return; db.ref(`currentDay/sales/${i}/${f}`).set(v); }
-    function updateCost(v) { if(!isAdmin) return; db.ref('currentDay/cost').set(v); }
-    function addNewOrder() { if(!isAdmin) return alert("افتح التعديل"); db.ref('currentDay/sales').once('value', (snap) => { let s = snap.val() || []; s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:""}); db.ref('currentDay/sales').set(s); }); }
-    function deleteSale(i) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("مسح؟")) { isTyping = false; db.ref('currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s); }); } }
-    
+    function updateSale(i, f, v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`; db.ref(ref).child(f).set(v); calculateImmediate(); }
+    function updateCost(v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/cost` : `currentDay/cost`; db.ref(ref).set(v); calculateImmediate(); }
+
+    function calculateImmediate() {
+        let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
+        let tQ=0, tR=0, tP=0;
+        document.querySelectorAll("#salesTable tbody tr").forEach(row => {
+            let q = parseFloat(row.cells[4].querySelector('input').value) || 0;
+            let p = parseFloat(row.cells[5].querySelector('input').value) || 0;
+            let rt = q * p; let rp = (p - cost) * q;
+            row.cells[6].innerText = rt.toLocaleString();
+            row.cells[7].innerText = rp.toLocaleString();
+            tQ += q; tR += rt; tP += rp;
+        });
+        document.getElementById("totalQty").innerText = tQ;
+        document.getElementById("totalRev").innerText = tR.toLocaleString();
+        document.getElementById("totalProf").innerText = tP.toLocaleString();
+    }
+
+    function addNewOrder() {
+        if(!isAdmin) return alert("افتح التعديل");
+        let ref = archID ? `history/${archID}/sales` : `currentDay/sales`;
+        db.ref(ref).once('value', (snap) => {
+            let s = snap.val() || [];
+            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:"", isCanceled: false});
+            db.ref(ref).set(s);
+        });
+    }
+
+    function deleteSale(i) {
+        if(!isAdmin) return alert("افتح التعديل");
+        if(confirm("مسح؟")) {
+            isTyping = false;
+            if(archID) db.ref(`history/${archID}/sales/${i}/isCanceled`).set(true);
+            else { db.ref('currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s); }); }
+        }
+    }
+
     function archiveToday() {
         if(!isAdmin) return alert("افتح التعديل");
         if(!confirm("ترحيل؟")) return;
         db.ref('currentDay').once('value', (snap) => {
             const d = snap.val();
-            db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales });
+            db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales, isCanceledDay: false });
             db.ref('currentDay/sales').set([]); alert("تم الترحيل");
         });
     }
 
-    function loadHistoryList() { db.ref('history').on('value', (snap) => { const list = document.getElementById("historyList"); list.innerHTML = ""; const d = snap.val(); if(!d) return; Object.keys(d).reverse().forEach(id => { let div = document.createElement("div"); div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);"; div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <button class="btn btn-user" onclick="viewHist('${id}')">فتح</button>`; list.appendChild(div); }); }); }
+    function loadHistoryList() {
+        db.ref('history').on('value', (snap) => {
+            const list = document.getElementById("historyList"); list.innerHTML = "";
+            const d = snap.val(); if(!d) return;
+            Object.keys(d).reverse().forEach(id => {
+                if(d[id].isCanceledDay) return;
+                let div = document.createElement("div");
+                div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);";
+                div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> 
+                <div style="display:flex; gap:10px;"><button class="btn btn-user" onclick="viewHist('${id}')">فتح</button><button class="btn" style="background:var(--danger);" onclick="cancelDay('${id}')">حذف</button></div>`;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    function cancelDay(id) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("حذف نهائي؟")) db.ref(`history/${id}/isCanceledDay`).set(true); }
+
     function viewHist(id) { archID = id; db.ref(`history/${id}`).on('value', (snap) => { const e = snap.val(); if(!e) return; document.getElementById("costPerUnit").value = e.cost; renderTable(e.sales || []); showTab('today'); }); }
+
+    function getWeekKey(dateStr) {
+        let parts = dateStr.split(' ')[0].split('/');
+        let d = new Date(parts[2], parts[1]-1, parts[0]);
+        if(isNaN(d)) d = new Date();
+        let day = d.getDay();
+        let diff = d.getDate() - day + (day === 6 ? 0 : -1); 
+        let sat = new Date(d.setDate(diff));
+        return "أسبوع " + sat.toLocaleDateString('ar-EG', {month:'short', day:'numeric'});
+    }
+
+    function loadMasterLog() {
+        const b = document.getElementById("masterBody"); b.innerHTML = "";
+        const w = document.getElementById("weeklyBody"); w.innerHTML = "";
+        db.ref().once('value', (snap) => {
+            const a = snap.val(); if(!a || !a.history) return;
+            let weeklyData = {};
+            Object.values(a.history).reverse().forEach(h => {
+                let isDayCanceled = h.isCanceledDay === true;
+                let weekKey = getWeekKey(h.date);
+                if(!weeklyData[weekKey]) weeklyData[weekKey] = { q:0, r:0, p:0 };
+                h.sales.forEach(s => {
+                    let q = parseFloat(s.qty)||0; let p = parseFloat(s.price)||0;
+                    let rt = q*p; let rp = (p - h.cost)*q;
+                    if(!isDayCanceled && !s.isCanceled) { weeklyData[weekKey].q+=q; weeklyData[weekKey].r+=rt; weeklyData[weekKey].p+=rp; }
+                    let row = b.insertRow();
+                    if(isDayCanceled || s.isCanceled) row.className = "canceled-row";
+                    row.innerHTML = `<td>${h.date} ${isDayCanceled || s.isCanceled ? '<span class="canceled-tag">ملغي</span>' : ''}</td>
+                                     <td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>`;
+                });
+            });
+            for(let key in weeklyData) { let row = w.insertRow(); row.innerHTML = `<td>${key}</td><td>${weeklyData[key].q}</td><td>${weeklyData[key].r.toLocaleString()}</td><td style="color:var(--success)">${weeklyData[key].p.toLocaleString()}</td>`; }
+        });
+    }
 
     function sendWA(i) {
         db.ref(archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`).once('value', (snap) => {
-            const s = snap.val(); if(!s.phone) return alert("أدخل رقم العميل");
+            const s = snap.val(); if(!s.phone) return alert("أدخل الرقم");
             const total = (parseFloat(s.qty) * parseFloat(s.price)).toLocaleString();
-            const msg = `🍟 *فاتورة مبيعات من Philo fries* 🍟%0A------------------------------------%0A👤 *العميل:* ${s.name}%0A🍟 *المنتج:* ${s.product}%0A🔢 *الكمية:* ${s.qty}%0A💰 *السعر:* ${s.price} EGP%0A💵 *الإجمالي:* ${total} EGP%0A------------------------------------%0A✨ *جودة نثق بها.. Philo fries*`;
+            const msg = `🍟 *فاتورة Philo fries* %0A👤 *العميل:* ${s.name}%0A🍟 *المنتج:* ${s.product}%0A🔢 *الكمية:* ${s.qty}%0A💰 *السعر:* ${s.price} EGP%0A💵 *الإجمالي:* ${total} EGP`;
             window.open(`https://wa.me/20${s.phone}?text=${msg}`, '_blank');
         });
     }
@@ -275,7 +339,7 @@
     function doPrint(m) {
         let rows = document.querySelectorAll("#salesTable tbody tr");
         let win = window.open('', '', 'height=700,width=1000');
-        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:40px; text-align:center;} table{width:100%; border-collapse:collapse; margin:20px 0;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
+        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:40px; text-align:center;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
         html += `<h2>فاتورة Philo fries 🍟</h2><table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
         if(m==='user') html += `<th>المكسب</th>`;
         html += `</tr></thead><tbody>`;
@@ -283,7 +347,7 @@
             let n=r.cells[1].querySelector('input').value; let pr=r.cells[3].querySelector('input').value; let q=r.cells[4].querySelector('input').value; let p=r.cells[5].querySelector('input').value;
             if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[7].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://wa.me/201126511633"><p>Philo fries | جودة نثق بها ✨</p></body></html>`;
+        html += `</tbody></table><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://wa.me/201126511633"><p>Philo fries ✨</p></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
