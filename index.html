@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesLog Royal Cloud | elgokar</title>
+    <title>SalesLog Royal Cloud | elgokar WhatsApp</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -12,7 +12,7 @@
         :root {
             --primary-gold: #d4af37; --dark-bg: #0f172a;
             --glass-bg: rgba(15, 23, 42, 0.85); --glass-border: rgba(255, 255, 255, 0.1);
-            --text-light: #f8fafc; --success: #10b981; --danger: #ef4444; --accent: #3b82f6;
+            --text-light: #f8fafc; --success: #10b981; --danger: #ef4444; --accent: #3b82f6; --whatsapp: #25D366;
         }
 
         body {
@@ -37,16 +37,18 @@
         .logo { font-size: 26px; font-weight: 900; color: var(--primary-gold); }
 
         .toolbar { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
-        .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
         .btn-add { background: var(--success); } .btn-archive { background: var(--accent); } .btn-user { background: var(--primary-gold); color: #000; }
         .btn-lock { background: #64748b; }
+        .btn-wa { background: var(--whatsapp); padding: 5px 10px !important; }
 
         .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1050px; }
-        th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); }
+        table { width: 100%; border-collapse: collapse; min-width: 1150px; }
+        th { padding: 15px; color: var(--primary-gold); border-bottom: 1px solid var(--glass-border); font-size: 14px; }
         td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
         .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 8px; border-radius: 6px; color: #fff; text-align: center; width: 90%; outline: none; font-family: Arial; }
+        .table-input::placeholder { color: rgba(255,255,255,0.2); }
 
         .canceled-row { color: var(--danger) !important; opacity: 0.7; font-style: italic; }
         .canceled-row td { text-decoration: line-through; }
@@ -60,18 +62,9 @@
         .t-btn { padding: 10px 25px; background: transparent; border: 1px solid var(--glass-border); border-radius: 10px; color: #94a3b8; cursor: pointer; }
         .t-btn.active { background: var(--primary-gold); color: #000; font-weight: bold; }
 
-        /* تنسيق المطور الجديد والشيك */
         footer { padding: 40px 20px; text-align: center; margin-top: auto; }
-        .dev-container {
-            display: inline-block;
-            padding: 12px 30px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--primary-gold);
-            border-radius: 50px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
-        }
-        .dev-name { color: var(--primary-gold); font-weight: 900; font-size: 18px; letter-spacing: 1px; }
+        .dev-container { display: inline-block; padding: 12px 30px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--primary-gold); border-radius: 50px; }
+        .dev-name { color: var(--primary-gold); font-weight: 900; font-size: 18px; }
         .dev-contact { color: #fff; font-size: 13px; margin-right: 15px; border-right: 1px solid #555; padding-right: 15px; }
 
         @media print { .no-print { display: none !important; } }
@@ -118,7 +111,7 @@
         <div class="table-wrapper">
             <table id="salesTable">
                 <thead>
-                    <tr><th>الوقت</th><th>اسم العميل</th><th>نوع المنتج</th><th>الكمية</th><th>سعر البيع</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr>
+                    <tr><th>الوقت</th><th>اسم العميل</th><th>رقم الموبايل</th><th>نوع المنتج</th><th>الكمية</th><th>سعر البيع</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -131,16 +124,9 @@
     </div>
 
     <div id="historySection" class="tab-section" style="display:none"><div id="historyList"></div></div>
-
     <div id="masterSection" class="tab-section" style="display:none">
-        <h3 style="color:var(--primary-gold)">📈 الملخص الأسبوعي (الفعلي فقط)</h3>
-        <div class="table-wrapper">
-            <table><thead><tr><th>الأسبوع</th><th>إجمالي الكمية</th><th>إجمالي المبيعات</th><th>إجمالي الربح الصافي</th></tr></thead><tbody id="weeklyBody"></tbody></table>
-        </div>
-        <h3 style="color:var(--primary-gold); margin-top:30px;">📜 كافة العمليات التاريخية</h3>
-        <div class="table-wrapper">
-            <table><thead><tr><th>التاريخ</th><th>العميل</th><th>نوع المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr></thead><tbody id="masterBody"></tbody></table>
-        </div>
+        <div class="table-wrapper"><table id="weeklyTable"><thead><tr><th>الأسبوع</th><th>الكمية</th><th>المبيعات</th><th>الربح الصافي</th></tr></thead><tbody id="weeklyBody"></tbody></table></div>
+        <div class="table-wrapper"><table><thead><tr><th>التاريخ</th><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>المكسب</th><th class="no-print">إجراء</th></tr></thead><tbody id="masterBody"></tbody></table></div>
     </div>
 </div>
 
@@ -152,7 +138,6 @@
 </footer>
 
 <script>
-    // --- ربط فايربيز ---
     const firebaseConfig = {
         apiKey: "AIzaSyAHoQSf3qtH_DaQIRVgvu3rKJr fBB24P38",
         authDomain: "sales-log-41275.firebaseapp.com",
@@ -165,10 +150,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    const OP_PASS = "254468300";
-    let isAdmin = false;
-    let isTyping = false;
-    let archID = null;
+    let isAdmin = false; let isTyping = false; let archID = null;
 
     function checkPass() {
         if(document.getElementById("passInput").value === "25446" || sessionStorage.getItem("logged") === "true") {
@@ -181,8 +163,8 @@
     if(sessionStorage.getItem("logged") === "true") checkPass();
 
     function unlockSystem() {
-        let p = prompt("أدخل باسوورد التعديل :");
-        if(p === OP_PASS) {
+        let p = prompt("أدخل باسوورد التعديل");
+        if(p === "254468300") {
             isAdmin = true;
             document.getElementById("lockBtn").innerText = "🔓 وضع التعديل مفتوح";
             document.getElementById("lockBtn").style.background = "var(--success)";
@@ -204,85 +186,65 @@
     function renderTable(sales) {
         const tbody = document.querySelector("#salesTable tbody");
         tbody.innerHTML = "";
+        let tQ=0, tR=0, tP=0;
+        let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
+
         sales.forEach((s, i) => {
             if(s.isCanceled && archID) return;
+            let q = parseFloat(s.qty) || 0; let p = parseFloat(s.price) || 0;
+            let rt = q * p; let rp = (p - cost) * q;
+            tQ += q; tR += rt; tP += rp;
+
             let row = tbody.insertRow();
             row.innerHTML = `
-                <td><input class="table-input" value="${s.time}" readonly style="border:none;"></td>
+                <td><input class="table-input" value="${s.time}" readonly style="border:none; width:70px"></td>
                 <td><input class="table-input" value="${s.name||''}" placeholder="..." ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'name',this.value)"></td>
+                <td><input class="table-input" value="${s.phone||''}" placeholder="01..." ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'phone',this.value)"></td>
                 <td><input class="table-input" value="${s.product||''}" placeholder="..." ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'product',this.value)"></td>
                 <td><input class="table-input" type="number" value="${s.qty||''}" placeholder="0" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'qty',this.value)"></td>
                 <td><input class="table-input" type="number" value="${s.price||''}" placeholder="0" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'price',this.value)"></td>
-                <td style="color:var(--primary-gold); font-weight:bold;">0</td>
-                <td style="color:var(--success); font-weight:bold;">0</td>
-                <td class="no-print"><button class="btn" style="padding:5px; background:var(--danger);" onclick="deleteSale(${i})">❌</button></td>
+                <td style="color:var(--primary-gold); font-weight:bold;">${rt.toLocaleString()}</td>
+                <td style="color:var(--success); font-weight:bold;">${rp.toLocaleString()}</td>
+                <td class="no-print">
+                    <button class="btn btn-wa" onclick="sendWA(${i})">💬</button>
+                    <button class="btn" style="padding:5px; background:var(--danger); display:inline-block;" onclick="deleteSale(${i})">❌</button>
+                </td>
             `;
-        });
-        calculateImmediate();
-    }
-
-    function calculateImmediate() {
-        let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
-        let tQ=0, tR=0, tP=0;
-        document.querySelectorAll("#salesTable tbody tr").forEach(row => {
-            let q = parseFloat(row.cells[3].querySelector('input').value) || 0;
-            let p = parseFloat(row.cells[4].querySelector('input').value) || 0;
-            let rt = q * p; let rp = (p - cost) * q;
-            row.cells[5].innerText = rt.toLocaleString();
-            row.cells[6].innerText = rp.toLocaleString();
-            tQ += q; tR += rt; tP += rp;
         });
         document.getElementById("totalQty").innerText = tQ;
         document.getElementById("totalRev").innerText = tR.toLocaleString();
         document.getElementById("totalProf").innerText = tP.toLocaleString();
     }
 
-    function updateSale(i, f, v) { 
-        if(!isAdmin) return;
-        let ref = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`;
-        db.ref(ref).child(f).set(v); 
-        calculateImmediate(); 
+    function sendWA(i) {
+        db.ref(archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`).once('value', (snap) => {
+            const s = snap.val();
+            if(!s.phone) return alert("أدخل رقم العميل أولاً");
+            const total = (parseFloat(s.qty) * parseFloat(s.price)).toLocaleString();
+            const msg = `*فاتورة مبيعات من SalesLog ☁️*%0A---------------------------%0A*اسم العميل:* ${s.name}%0A*نوع المنتج:* ${s.product}%0A*الكمية:* ${s.qty}%0A*سعر البيع:* ${s.price} EGP%0A*الإجمالي:* ${total} EGP%0A---------------------------%0A*شكراً لتعاملك مع elgokar*`;
+            window.open(`https://wa.me/20${s.phone}?text=${msg}`, '_blank');
+        });
     }
 
-    function updateCost(v) { 
-        if(!isAdmin) return;
-        let ref = archID ? `history/${archID}/cost` : `currentDay/cost`;
-        db.ref(ref).set(v); 
-        calculateImmediate(); 
-    }
+    function updateSale(i, f, v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`; db.ref(ref).child(f).set(v); }
+    function updateCost(v) { if(!isAdmin) return; let ref = archID ? `history/${archID}/cost` : `currentDay/cost`; db.ref(ref).set(v); }
     
     function addNewOrder() {
         if(!isAdmin) return alert("افتح وضع التعديل أولاً");
         let ref = archID ? `history/${archID}/sales` : `currentDay/sales`;
         db.ref(ref).once('value', (snap) => {
             let s = snap.val() || [];
-            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", product:"", qty:"", price:"", isCanceled: false});
+            s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:"", isCanceled: false});
             db.ref(ref).set(s);
         });
     }
 
     function deleteSale(i) {
         if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("مسح هذه العملية؟")) {
+        if(confirm("مسح؟")) {
             isTyping = false;
             if(archID) db.ref(`history/${archID}/sales/${i}/isCanceled`).set(true);
-            else {
-                db.ref('currentDay/sales').once('value', (snap) => {
-                    let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s);
-                });
-            }
-        }
-    }
-
-    function deleteFromMaster(dayKey, saleIndex, isToday) {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("هل أنت متأكد من حذف هذه البيعة نهائياً من السحابة؟")) {
-            let path = isToday ? `currentDay/sales` : `history/${dayKey}/sales`;
-            db.ref(path).once('value', (snap) => {
-                let s = snap.val() || [];
-                s.splice(saleIndex, 1);
-                db.ref(path).set(s).then(() => loadMasterLog());
-            });
+            else { db.ref('currentDay/sales').once('value', (snap) => { let s = snap.val(); s.splice(i, 1); db.ref('currentDay/sales').set(s); }); }
         }
     }
 
@@ -306,7 +268,7 @@
                 let div = document.createElement("div");
                 div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);";
                 div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> 
-                <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح اليوم</button><button class="btn" style="background:var(--danger); margin-top:5px;" onclick="cancelFullDay('${id}')">حذف 🗑️</button></div>`;
+                <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح</button><button class="btn" style="background:var(--danger); margin-top:5px;" onclick="cancelFullDay('${id}')">حذف</button></div>`;
                 list.appendChild(div);
             });
         });
@@ -314,9 +276,7 @@
 
     function cancelFullDay(id) {
         if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if(confirm("حذف هذا اليوم نهائياً؟")) {
-            db.ref(`history/${id}/isCanceledDay`).set(true);
-        }
+        if(confirm("حذف نهائي؟")) db.ref(`history/${id}/isCanceledDay`).set(true);
     }
 
     function viewHist(id) {
@@ -329,105 +289,51 @@
         });
     }
 
-    function getWeekKey(dateStr) {
-        let parts = dateStr.split(' ')[0].split('/');
-        let d = new Date(parts[2], parts[1]-1, parts[0]);
-        if(isNaN(d)) d = new Date();
-        let day = d.getDay();
-        let diff = d.getDate() - day + (day === 6 ? 0 : -1); 
-        let sat = new Date(d.setDate(diff));
-        return "أسبوع " + sat.toLocaleDateString('ar-EG', {month:'short', day:'numeric'});
-    }
-
     function loadMasterLog() {
         const b = document.getElementById("masterBody"); b.innerHTML = "";
         const w = document.getElementById("weeklyBody"); w.innerHTML = "";
         db.ref().once('value', (snap) => {
             const a = snap.val(); if(!a) return;
             let weeklyData = {};
-            
             if(a.history) {
                 Object.keys(a.history).reverse().forEach(dayKey => {
                     let h = a.history[dayKey];
-                    let isDayCanceled = h.isCanceledDay === true;
-                    let weekKey = getWeekKey(h.date);
-                    if(!weeklyData[weekKey]) weeklyData[weekKey] = { q:0, r:0, p:0 };
-                    if(h.sales) {
-                        h.sales.forEach((s, sIndex) => {
-                            let q = parseFloat(s.qty) || 0;
-                            let p = parseFloat(s.price) || 0;
-                            let rt = q * p; let rp = (p - h.cost) * q;
-                            if(!isDayCanceled && !s.isCanceled) {
-                                weeklyData[weekKey].q += q; weeklyData[weekKey].r += rt; weeklyData[weekKey].p += rp;
-                            }
-                            let row = b.insertRow();
-                            if(isDayCanceled || s.isCanceled) row.className = "canceled-row";
-                            row.innerHTML = `<td>${h.date} ${isDayCanceled || s.isCanceled ? '<span class="canceled-tag">ملغي</span>' : ''}</td>
-                                             <td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td>
-                                             <td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>
-                                             <td class="no-print"><button class="btn" style="background:var(--danger); padding:5px" onclick="deleteFromMaster('${dayKey}', ${sIndex}, false)">❌</button></td>`;
-                        });
-                    }
+                    h.sales.forEach((s, sIdx) => {
+                        let q = parseFloat(s.qty)||0; let p = parseFloat(s.price)||0;
+                        let rt = q * p; let rp = (p - h.cost) * q;
+                        let row = b.insertRow();
+                        if(h.isCanceledDay || s.isCanceled) row.className = "canceled-row";
+                        row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td><td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td><td><button class="btn" style="background:var(--danger);padding:5px" onclick="finalDelete('${dayKey}',${sIdx})">❌</button></td>`;
+                    });
                 });
-            }
-
-            if(a.currentDay && a.currentDay.sales) {
-                a.currentDay.sales.forEach((s, sIndex) => {
-                    let q = parseFloat(s.qty) || 0;
-                    let p = parseFloat(s.price) || 0;
-                    let rt = q * p; let rp = (p - a.currentDay.cost) * q;
-                    let row = b.insertRow(0);
-                    row.innerHTML = `<td>اليوم (قيد العمل)</td><td>${s.name}</td><td>${s.product||'-'}</td><td>${s.qty}</td><td>${s.price}</td>
-                                     <td>${rt.toLocaleString()}</td><td>${rp.toLocaleString()}</td>
-                                     <td class="no-print"><button class="btn" style="background:var(--danger); padding:5px" onclick="deleteFromMaster('', ${sIndex}, true)">❌</button></td>`;
-                });
-            }
-
-            for(let key in weeklyData) {
-                let row = w.insertRow();
-                row.innerHTML = `<td>${key}</td><td>${weeklyData[key].q}</td>
-                                 <td>${weeklyData[key].r.toLocaleString()}</td>
-                                 <td style="color:var(--success)">${weeklyData[key].p.toLocaleString()}</td>`;
             }
         });
     }
 
-    function showTab(t) {
-        if(t !== 'today') archID = null;
-        document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none');
-        document.getElementById(t + 'Section').style.display = 'block';
-        document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + t).classList.add('active');
+    function finalDelete(dk, si) {
+        if(!isAdmin) return alert("افتح التعديل");
+        if(confirm("حذف نهائي من السحابة؟")) db.ref(`history/${dk}/sales`).once('value', snap => {
+            let s = snap.val(); s.splice(si,1); db.ref(`history/${dk}/sales`).set(s).then(()=>loadMasterLog());
+        });
     }
+
+    function showTab(t) { if(t !== 'today') archID = null; document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none'); document.getElementById(t + 'Section').style.display = 'block'; document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + t).classList.add('active'); }
 
     function doPrint(m) {
         let win = window.open('', '', 'height=700,width=1000');
         let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:20px;} table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
-        html += `<h2>SalesLog - ${m==='user'?'تقرير إدارة':'فاتورة عميل'}</h2><table><thead><tr><th>العميل</th><th>نوع المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
+        html += `<h2>SalesLog - ${m==='user'?'تقرير إدارة':'فاتورة عميل'}</h2><table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
         if(m==='user') html += `<th>المكسب</th>`;
         html += `</tr></thead><tbody>`;
         document.querySelectorAll("#salesTable tbody tr").forEach(r => {
-            let n=r.cells[1].querySelector('input').value; 
-            let pr=r.cells[2].querySelector('input').value; 
-            let q=r.cells[3].querySelector('input').value; 
-            let p=r.cells[4].querySelector('input').value;
-            if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[5].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[6].innerText}</td>`; html+=`</tr>`;}
+            let n=r.cells[1].querySelector('input').value; let pr=r.cells[3].querySelector('input').value; let q=r.cells[4].querySelector('input').value; let p=r.cells[5].querySelector('input').value;
+            if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[7].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><footer style="margin-top:30px; text-align:center; font-weight:bold;">elgokar | للتواصل واتس 01126511633</footer></body></html>`;
+        html += `</tbody></table><footer style="margin-top:30px; text-align:center;">elgokar | 01126511633</footer></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
-    function changeBg(input) {
-        if(!isAdmin) return alert("افتح وضع التعديل أولاً");
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                document.body.style.backgroundImage = `url(${e.target.result})`;
-                localStorage.setItem("royal_bg", e.target.result);
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+    function changeBg(input) { if(!isAdmin) return alert("افتح التعديل"); if (input.files && input.files[0]) { let reader = new FileReader(); reader.onload = (e) => { document.body.style.backgroundImage = `url(${e.target.result})`; localStorage.setItem("royal_bg", e.target.result); }; reader.readAsDataURL(input.files[0]); } }
     setInterval(()=> { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
 </body>
