@@ -16,7 +16,7 @@
         }
 
         .dark-mode {
-            --dark-bg: #000000; --glass-bg: rgba(20, 20, 20, 0.9);
+            --dark-bg: #000000; --glass-bg: rgba(20, 20, 20, 0.95);
             --text-light: #e2e8f0; --glass-border: rgba(212, 175, 55, 0.2);
         }
 
@@ -27,54 +27,55 @@
             display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* هيدر جديد فخم جداً */
+        /* هيدر ملكي فخم */
         header {
             position: sticky; top: 0; z-index: 1000;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-            backdrop-filter: blur(15px); padding: 15px 25px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(15px); padding: 12px 25px;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid var(--primary-gold);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .logo-box h1 { margin: 0; font-size: 24px; color: var(--primary-gold); font-weight: 900; letter-spacing: 1px; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .logo-box h1 { margin: 0; font-size: 22px; color: var(--primary-gold); font-weight: 900; }
         
-        .status-box { display: flex; align-items: center; gap: 8px; font-size: 11px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 20px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; transition: 0.3s; }
-        .online-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .offline-dot { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .status-lamp { display: flex; align-items: center; gap: 6px; font-size: 10px; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 15px; border: 1px solid var(--glass-border); }
+        .lamp { width: 8px; height: 8px; border-radius: 50%; }
+        .online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
 
-        .clock-box { font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; color: var(--primary-gold); border: 1px solid var(--glass-border); padding: 5px 15px; border-radius: 12px; }
+        .clock-frame { font-family: 'Courier New', monospace; font-weight: bold; font-size: 16px; color: var(--primary-gold); background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 10px; border: 1px solid var(--primary-gold); }
 
         /* شاشة الدخول */
         #loginOverlay { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-card { background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-gold); text-align: center; width: 300px; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
+        .login-card { background: #1e293b; padding: 40px; border-radius: 20px; border: 1px solid var(--primary-gold); text-align: center; width: 300px; }
+        .login-card h1 { color: var(--primary-gold); margin-bottom: 20px; }
         .login-card input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-size: 18px; }
 
-        #verifyOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; }
+        /* نافذة باسوورد العمليات */
+        #verifyOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; }
         .verify-card { background: #1e293b; padding: 30px; border-radius: 20px; border: 1px solid var(--accent); text-align: center; width: 280px; }
+        .verify-card input { width: 100%; padding: 12px; margin-bottom: 20px; background:#000; color:#fff; border-radius:10px; text-align:center; border:1px solid var(--primary-gold); }
 
         #mainContent { display: none; width: 96%; max-width: 1400px; margin: 20px auto; flex: 1; }
 
         .toolbar { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
         .btn { padding: 12px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; color: #fff; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-add { background: var(--success); } .btn-archive { background: var(--accent); } .btn-user { background: var(--primary-gold); color: #000; }
-        .btn-wa { background: var(--whatsapp); margin-left: 15px !important; } /* إبعاد الواتساب عن الحذف */
+        .btn-wa { background: var(--whatsapp); margin-left: 25px !important; } /* إبعاد الواتس عن الحذف */
 
-        .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
-        th { padding: 18px; color: var(--primary-gold); border-bottom: 2px solid var(--glass-border); text-transform: uppercase; font-size: 13px; letter-spacing: 1px; }
-        td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: center; }
+        .table-wrapper { background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); overflow-x: auto; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+        th { padding: 18px; color: var(--primary-gold); border-bottom: 2px solid var(--glass-border); font-size: 13px; }
+        td { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; }
         
-        .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: #fff; text-align: center; width: 90%; outline: none; }
-        
-        .canceled-row { background: rgba(239, 68, 68, 0.1) !important; color: var(--danger) !important; }
-        .canceled-row td { text-decoration: line-through; opacity: 0.6; }
+        .table-input { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: #fff; text-align: center; width: 90%; outline: none; font-family: Arial; }
+        .table-input:read-only { opacity: 0.5; cursor: not-allowed; }
+        .table-input::placeholder { color: rgba(255,255,255,0.1); }
 
         .tab-nav { margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; }
         .t-btn { padding: 12px 25px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: #94a3b8; cursor: pointer; transition: 0.3s; }
-        .t-btn.active { background: var(--primary-gold); color: #000; font-weight: bold; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        .t-btn.active { background: var(--primary-gold); color: #000; font-weight: bold; }
 
         footer { padding: 30px; text-align: center; background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border); color: #64748b; font-weight: bold; }
 
@@ -88,7 +89,7 @@
         <h1>SalesLog</h1>
         <p style="color:var(--primary-gold)">الملكية Philo fries</p>
         <input type="password" id="passInput" placeholder="Password">
-        <button class="btn btn-user" onclick="checkPass()" style="width:100%; justify-content: center;">دخول للنظام</button>
+        <button class="btn btn-user" onclick="checkPass()" style="width:100%; justify-content: center;">دخول</button>
     </div>
 </div>
 
@@ -96,7 +97,7 @@
     <div class="verify-card">
         <h3 style="color:var(--primary-gold)">إذن العمليات</h3>
         <input type="password" id="actionPassInp" placeholder="أدخل الرقم السري">
-        <div style="display:flex; gap:10px; margin-top:15px;">
+        <div style="display:flex; gap:10px;">
             <button class="btn btn-add" onclick="confirmUnlock()" style="flex:1; justify-content:center">فتح</button>
             <button class="btn" onclick="closeVerify()" style="flex:1; justify-content:center; background:#444">إلغاء</button>
         </div>
@@ -105,14 +106,14 @@
 
 <header class="no-print">
     <div class="header-left">
-        <div class="logo-box"><h1>SalesLog Royal</h1></div>
-        <div id="connStatus" class="status-box">
-            <span id="statusDot" class="dot online-dot"></span>
-            <span id="statusText">متصل بالسحابة</span>
+        <div class="logo-box"><h1>Philo fries 🍟</h1></div>
+        <div id="connStatus" class="status-lamp">
+            <span id="statusDot" class="lamp online"></span>
+            <span id="statusText">متصل</span>
         </div>
     </div>
-    <div class="clock-box" id="liveClock">00:00:00</div>
-    <div style="display:flex; gap:15px; align-items:center;">
+    <div class="clock-frame" id="liveClock">00:00:00</div>
+    <div style="display:flex; gap:10px; align-items:center;">
         <button class="btn" style="background:rgba(255,255,255,0.1); padding:8px;" onclick="toggleDarkMode()">🌓</button>
         <button class="btn btn-user" style="font-size:10px; padding:8px;" onclick="document.getElementById('bgInp').click()">🖼 الخلفية</button>
         <input type="file" id="bgInp" hidden accept="image/*" onchange="changeBg(this)">
@@ -129,7 +130,7 @@
     </div>
 
     <div class="tab-nav no-print">
-        <button class="t-btn active" id="tab-today" onclick="showTab('today')">المبيعات الحالية</button>
+        <button class="t-btn active" id="tab-today" onclick="showTab('today')">مبيعات اليوم</button>
         <button class="t-btn" id="tab-history" onclick="showTab('history'); loadHistoryList()">الأرشيف</button>
         <button class="t-btn" id="tab-master" onclick="showTab('master'); loadMasterLog()">السجل الشامل</button>
     </div>
@@ -156,12 +157,9 @@
     </div>
 </div>
 
-<footer>
-    المطور <span style="color:var(--primary-gold)">elgokar</span> | للتواصل واتس 01126511633 | <span style="color:var(--danger)">yola❤</span>
-</footer>
+<footer>elgokar | للتواصل واتس 01126511633 | <span style="color:var(--danger)">yola❤</span></footer>
 
 <script>
-    // --- ربط فايربيز (نفس بياناتك) ---
     const firebaseConfig = {
         apiKey: "AIzaSyAHoQSf3qtH_DaQIRVgvu3rKJr fBB24P38",
         authDomain: "sales-log-41275.firebaseapp.com",
@@ -176,9 +174,8 @@
     
     let isAdmin = false; let isTyping = false; let archID = null;
 
-    // فحص النت
-    window.addEventListener('online', () => { document.getElementById('statusDot').className = 'dot online-dot'; document.getElementById('statusText').innerText = 'متصل بالسحابة'; db.goOnline(); });
-    window.addEventListener('offline', () => { document.getElementById('statusDot').className = 'dot offline-dot'; document.getElementById('statusText').innerText = 'أوفلاين (حفظ محلي)'; db.goOffline(); });
+    window.addEventListener('online', () => { document.getElementById('statusDot').className = 'lamp online'; db.goOnline(); });
+    window.addEventListener('offline', () => { document.getElementById('statusDot').className = 'lamp offline'; db.goOffline(); });
 
     function checkPass() {
         if(document.getElementById("passInput").value === "25446" || sessionStorage.getItem("logged") === "true") {
@@ -194,10 +191,10 @@
     function closeVerify() { document.getElementById("verifyOverlay").style.display = "none"; }
     function confirmUnlock() {
         if(document.getElementById("actionPassInp").value === "254468300") {
-            isAdmin = true; document.getElementById("lockBtn").innerText = "🔓 التعديل مفتوح";
+            isAdmin = true; document.getElementById("lockBtn").innerText = "🔓 وضع التعديل مفتوح";
             document.getElementById("lockBtn").style.background = "var(--success)";
             closeVerify(); startSync();
-        } else { alert("باسوورد خطأ!"); }
+        } else { alert("خطأ!"); }
     }
 
     function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
@@ -226,56 +223,51 @@
                 <td><input class="table-input" value="${s.name||''}" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'name',this.value)"></td>
                 <td><input class="table-input" value="${s.phone||''}" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'phone',this.value)"></td>
                 <td><input class="table-input" value="${s.product||''}" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'product',this.value)"></td>
-                <td><input class="table-input" type="number" value="${s.qty||''}" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'qty',this.value)"></td>
-                <td><input class="table-input" type="number" value="${s.price||''}" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'price',this.value)"></td>
+                <td><input class="table-input" type="number" value="${s.qty||''}" placeholder="0" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'qty',this.value)"></td>
+                <td><input class="table-input" type="number" value="${s.price||''}" placeholder="0" ${!isAdmin?'readonly':''} onfocus="isTyping=true" onblur="isTyping=false" oninput="updateSale(${i},'price',this.value)"></td>
                 <td style="color:var(--primary-gold); font-weight:bold;">${rt.toLocaleString()}</td>
                 <td style="color:var(--success); font-weight:bold;">${rp.toLocaleString()}</td>
                 <td class="no-print">
-                    <button class="btn btn-wa" onclick="sendWAPDF(${i})">💬 فاتورة</button>
+                    <button class="btn btn-wa" onclick="goWA(${i})">💬 شات</button>
                     <button class="btn" style="padding:5px; background:var(--danger); display:inline-block;" onclick="deleteSale(${i})">❌</button>
                 </td>
             `;
         });
     }
 
-    // إرسال فاتورة PDF (فتح نافذة الطباعة أولاً)
-    function sendWAPDF(i) {
+    // شات العميل مباشرة بدون رسائل
+    function goWA(i) {
         let ref = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`;
         db.ref(ref).once('value', (snap) => {
-            const s = snap.val(); if(!s.phone) return alert("أدخل رقم العميل");
-            alert("سيتم الآن فتح الفاتورة للطباعة كـ PDF.. يرجى حفظها وإرسالها للعميل في محادثة الواتساب التي ستفتح تلقائياً.");
-            doPrint('customer', i); // طباعة فاتورة هذا العميل فقط
-            setTimeout(() => { window.open(`https://wa.me/20${s.phone}`, '_blank'); }, 2000);
+            const s = snap.val(); if(!s.phone) return alert("أدخل رقم الموبايل");
+            window.open(`https://wa.me/20${s.phone}`, '_blank');
         });
     }
 
-    function updateSale(i, f, v) { if(!isAdmin) return; let r = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`; db.ref(r).child(f).set(v); }
-    function updateCost(v) { if(!isAdmin) return; let r = archID ? `history/${archID}/cost` : `currentDay/cost`; db.ref(r).set(v); }
-    function addNewOrder() { if(!isAdmin) return alert("افتح التعديل"); let r = archID ? `history/${archID}/sales` : `currentDay/sales`; db.ref(r).once('value', snap => { let s = snap.val() || []; s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:"", isCanceled: false}); db.ref(r).set(s); }); }
+    function updateSale(i, f, v) { if(!isAdmin) return; let r = archID ? `history/${archID}/sales/${i}` : `currentDay/sales/${i}`; db.ref(r).child(f).set(v); calculateLocally(); }
+    function updateCost(v) { if(!isAdmin) return; let r = archID ? `history/${archID}/cost` : `currentDay/cost`; db.ref(r).set(v); calculateLocally(); }
+    function calculateLocally() { 
+        let cost = parseFloat(document.getElementById("costPerUnit").value) || 0;
+        document.querySelectorAll("#salesTable tbody tr").forEach(row => {
+            let q = parseFloat(row.cells[4].querySelector('input').value) || 0;
+            let p = parseFloat(row.cells[5].querySelector('input').value) || 0;
+            row.cells[6].innerText = (q * p).toLocaleString();
+            row.cells[7].innerText = ((p - cost) * q).toLocaleString();
+        });
+    }
+
+    function addNewOrder() { if(!isAdmin) return alert("افتح التعديل"); let r = archID ? `history/${archID}/sales` : `currentDay/sales`; db.ref(r).once('value', snap => { let s = snap.val() || []; s.push({time: new Date().toLocaleTimeString('en-US',{hour12:false, hour:'2-digit', minute:'2-digit'}), name:"", phone:"", product:"", qty:"", price:""}); db.ref(r).set(s); }); }
     function deleteSale(i) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("مسح؟")) { isTyping = false; let r = archID ? `history/${archID}/sales` : 'currentDay/sales'; db.ref(r).once('value', snap => { let s = snap.val(); s.splice(i, 1); db.ref(r).set(s); }); } }
 
     function archiveToday() {
         if(!isAdmin) return alert("افتح التعديل"); if(!confirm("ترحيل؟")) return;
         db.ref('currentDay').once('value', snap => {
-            const d = snap.val(); db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales, isCanceledDay: false });
+            const d = snap.val(); db.ref('history').push({ date: new Date().toLocaleString('ar-EG'), cost: d.cost, sales: d.sales });
             db.ref('currentDay/sales').set([]); alert("تم الترحيل");
         });
     }
 
-    function loadHistoryList() {
-        db.ref('history').on('value', snap => {
-            const list = document.getElementById("historyList"); list.innerHTML = "";
-            const d = snap.val(); if(!d) return;
-            Object.keys(d).reverse().forEach(id => {
-                if(d[id].isCanceledDay) return;
-                let div = document.createElement("div"); div.className = "history-item";
-                div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح</button><button class="btn" style="background:var(--danger); margin-top:5px;" onclick="cancelDay('${id}')">حذف</button></div>`;
-                list.appendChild(div);
-            });
-        });
-    }
-
-    function cancelDay(id) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("حذف من الأرشيف؟")) db.ref(`history/${id}/isCanceledDay`).set(true); }
+    function loadHistoryList() { db.ref('history').on('value', snap => { const list = document.getElementById("historyList"); list.innerHTML = ""; const d = snap.val(); if(!d) return; Object.keys(d).reverse().forEach(id => { let div = document.createElement("div"); div.style = "background:var(--glass-bg); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--glass-border);"; div.innerHTML = `<strong>🗓️ ${d[id].date}</strong> <div><button class="btn btn-user" onclick="viewHist('${id}')">فتح</button></div>`; list.appendChild(div); }); }); }
     function viewHist(id) { archID = id; db.ref(`history/${id}`).on('value', snap => { const e = snap.val(); if(!e) return; document.getElementById("costPerUnit").value = e.cost; renderTable(e.sales || []); showTab('today'); }); }
 
     function loadMasterLog() {
@@ -284,43 +276,34 @@
             const a = snap.val(); if(!a || !a.history) return;
             Object.keys(a.history).reverse().forEach(dayKey => {
                 let h = a.history[dayKey];
-                h.sales.forEach((s, sIdx) => {
+                if(h.sales) h.sales.forEach((s, sIdx) => {
                     let rt = (parseFloat(s.qty)||0) * (parseFloat(s.price)||0);
                     let row = b.insertRow();
-                    if(h.isCanceledDay || s.isCanceled) row.className = "canceled-row";
                     row.innerHTML = `<td>${h.date}</td><td>${s.name}</td><td>${s.product}</td><td>${s.qty}</td><td>${s.price}</td><td>${rt.toLocaleString()}</td><td>-</td>
-                    <td><button class="btn" style="background:var(--danger); padding:5px" onclick="masterDel('${dayKey}',${sIdx})">❌ حذف نهائي</button></td>`;
+                    <td><button class="btn" style="background:var(--danger); padding:5px" onclick="masterDel('${dayKey}',${sIdx})">❌ حذف</button></td>`;
                 });
             });
         });
     }
 
-    function masterDel(dk, si) {
-        if(!isAdmin) return alert("افتح التعديل");
-        if(confirm("حذف العملية نهائياً من السحابة؟ لا يمكن التراجع!")) {
-            db.ref(`history/${dk}/sales`).once('value', snap => {
-                let s = snap.val(); s.splice(si, 1); db.ref(`history/${dk}/sales`).set(s).then(() => loadMasterLog());
-            });
-        }
-    }
+    function masterDel(dk, si) { if(!isAdmin) return alert("افتح التعديل"); if(confirm("حذف نهائي؟")) db.ref(`history/${dk}/sales`).once('value', snap => { let s = snap.val(); s.splice(si, 1); db.ref(`history/${dk}/sales`).set(s).then(() => loadMasterLog()); }); }
 
-    function showTab(t) { if(t !== 'today') archID = null; document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none'); document.getElementById(t + 'Section').style.display = 'block'; document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + t).classList.add('active'); }
-
-    function doPrint(m, singleIdx = null) {
+    function doPrint(m) {
         let rows = document.querySelectorAll("#salesTable tbody tr");
         let win = window.open('', '', 'height=700,width=1000');
-        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:40px; text-align:center;} table{width:80%; margin:20px auto; border-collapse:collapse;} th,td{border:1px solid #000; padding:12px; text-align:center;}</style></head><body>`;
-        html += `<h2>فاتورة Philo fries 🍟</h2><table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>`;
-        
-        rows.forEach((r, idx) => {
-            if(singleIdx !== null && idx !== singleIdx) return;
+        let html = `<html><head><style>body{direction:rtl; font-family:sans-serif; padding:40px; text-align:center;} table{width:100%; border-collapse:collapse; margin:20px 0;} th,td{border:1px solid #000; padding:10px; text-align:center;} th{background:#eee;}</style></head><body>`;
+        html += `<h2>فاتورة Philo fries 🍟</h2><table><thead><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th>`;
+        if(m==='user') html += `<th>المكسب</th>`;
+        html += `</tr></thead><tbody>`;
+        rows.forEach(r => {
             let n=r.cells[1].querySelector('input').value; let pr=r.cells[3].querySelector('input').value; let q=r.cells[4].querySelector('input').value; let p=r.cells[5].querySelector('input').value;
-            if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td></tr>`; }
+            if(n||q){ html+=`<tr><td>${n}</td><td>${pr}</td><td>${q}</td><td>${p}</td><td>${r.cells[6].innerText}</td>`; if(m==='user') html+=`<td>${r.cells[7].innerText}</td>`; html+=`</tr>`;}
         });
-        html += `</tbody></table><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://wa.me/201126511633"><p>Philo fries | جودة نثق بها ✨</p></body></html>`;
+        html += `</tbody></table><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://wa.me/201126511633"><p>Philo fries ✨</p></body></html>`;
         win.document.write(html); win.document.close(); setTimeout(()=>win.print(), 500);
     }
 
+    function showTab(t) { if(t !== 'today') archID = null; document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none'); document.getElementById(t + 'Section').style.display = 'block'; document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + t).classList.add('active'); }
     function changeBg(i) { if (i.files && i.files[0]) { let r = new FileReader(); r.onload = (e) => { document.body.style.backgroundImage = `url(${e.target.result})`; localStorage.setItem("royal_bg", e.target.result); }; r.readAsDataURL(i.files[0]); } }
     setInterval(()=> { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString(); }, 1000);
 </script>
